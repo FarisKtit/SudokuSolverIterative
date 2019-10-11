@@ -372,27 +372,38 @@ class Sudoku {
   */
   public static void computeResults(final int[][] input) {
     final int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    //Flag to exit while loop
     boolean solved = false;
+    //Data structure to store candidate numbers in a Candidate object for each empty cell
     ArrayList<Candidate> Candids = new ArrayList<Candidate>();
+    //Data struture to store indexes of empty cells on grid
+    //There exists a 1-1 mapping between the Candids & emptyCells data structures where
+    //each empty cell has a set of corresponding candidate numbers
     ArrayList<String> emptyCells = new ArrayList<String>();
 
+    //Keep looping until all empty cells are occupied
     while(!solved) {
+      //Find each empty cell and store potential candidate numbers that could fill that cell
+      //If only one candidate exists, update the cell with that candidate
       for(int i = 0; i < input.length; ++i) {
         for(int j = 0; j < input[i].length; ++j) {
           if(input[i][j] == 0) {
             int c = 0;
             int t = 0;
+            //Find candidates
             for(int s = 0; s < numbers.length; ++s) {
               if((!existsInGrid(i, j, numbers[s], input)) && (!existsInRow(i, numbers[s], input)) && (!existsInColumn(j, numbers[s], input))) {
                 c++;
                 t = numbers[s];
               }
             }
+            //Update if only one candidate exists
             if(c == 1) input[i][j] = t;
             else {
               String str = i + ":" + j;
               emptyCells.add(str);
               Candidate C = new Candidate();
+              //More than one candidate in the empty cell is stored in a corresponding candidate object
               for(int f = 0; f < numbers.length; ++f) {
                 if((!existsInGrid(i, j, numbers[f], input)) && (!existsInRow(i, numbers[f], input)) && (!existsInColumn(j, numbers[f], input))) {
                   C.addCandidate(numbers[f]);
@@ -403,22 +414,29 @@ class Sudoku {
           }
         }
       }
+      //Keep backtracking until all empty cells are occupied
       int pointer = 0;
       while(true) {
         if((pointer >= emptyCells.size()) || (pointer < 0)) break;
+        //On each iteration work on a new empty cell
         String s = emptyCells.get(pointer);
         String[] splitString = s.split(":");
+        //Extract cell co-ordinates
         int i = Integer.parseInt(splitString[0]);
         int j = Integer.parseInt(splitString[1]);
         Candidate CA = Candids.get(pointer);
+        //Get corresponding candidates
         while(true) {
+          //Iterate until one candidate conforms to sudoku constraints
           int num = CA.getCandidate();
+          //When num is negative, pointer has iterated over all candidates, start again
           if(num == -1) {
             CA.resetCounter();
             input[i][j] = 0;
             --pointer;
             break;
           }
+          //Check if candidate conforms to Sudoku constraints, if so break to move onto next empty cell
           if((!existsInGrid(i, j, num, input)) && (!existsInRow(i, num, input)) && (!existsInColumn(j, num, input))) {
             input[i][j] = num;
             ++pointer;
@@ -427,6 +445,7 @@ class Sudoku {
         }
       }
       solved = true;
+      //Check if empty cells still exist
       for(int i = 0; i < input.length; ++i) {
         for(int j = 0; j < input[i].length; ++j) {
           if(input[i][j] == 0) {
