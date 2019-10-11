@@ -1,0 +1,20 @@
+
+Sudoku Calculator
+
+-Create 9 x 9 2D array
+-Input known numbers into data structure
+-Initialise solved variable to false
+-Construct numbers array
+-Construct map to identify 3 x 3 grid
+-Construct shuffle function to shuffle array of numbers to try
+-Enter while loop with boolean expression
+-Shuffle numbers array
+-Construct array of candidate objects for each empty cell using loop and filling in empty cell if candidate is only one number
+-loop through 2D structure until empty cell is found
+-on each empty cell, loop through numbers array
+-if number satisfies three constraints, place number in cell, break and move on
+-Otherwise loop to next number in number array and carry on for all numbers until one is found
+-If none is found, move onto next empty cell
+-At the end, loop through array to check if any cell is empty
+-If all cells full, change solved to true which will break out of while loop
+-Otherwise continue again and again shuffling numbers array on each iteration till sequence is found.
